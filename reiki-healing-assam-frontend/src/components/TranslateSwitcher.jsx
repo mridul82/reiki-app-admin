@@ -6,15 +6,23 @@ const LANGS = [
   { code: "as", label: "অ" },
 ]
 
+function clearGoogCookie() {
+  const host = window.location.hostname
+  const expire = "expires=Thu, 01 Jan 1970 00:00:00 UTC"
+  // Clear all variants Google might have set
+  document.cookie = `googtrans=; ${expire}; path=/`
+  document.cookie = `googtrans=; ${expire}; path=/; domain=${host}`
+  document.cookie = `googtrans=; ${expire}; path=/; domain=.${host}`
+}
+
 function setGoogleTranslateLang(langCode) {
-  if (langCode === "en") {
-    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/"
-    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + window.location.hostname
-    window.location.reload()
-    return
+  clearGoogCookie()
+  if (langCode !== "en") {
+    const host = window.location.hostname
+    document.cookie = `googtrans=/en/${langCode}; path=/`
+    document.cookie = `googtrans=/en/${langCode}; path=/; domain=${host}`
+    document.cookie = `googtrans=/en/${langCode}; path=/; domain=.${host}`
   }
-  document.cookie = `googtrans=/en/${langCode}; path=/`
-  document.cookie = `googtrans=/en/${langCode}; path=/; domain=.${window.location.hostname}`
   window.location.reload()
 }
 
