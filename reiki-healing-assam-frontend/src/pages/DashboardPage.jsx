@@ -10,19 +10,37 @@ const LANGS = [
 ]
 
 function setGoogleTranslateLang(langCode) {
-  // Google Translate sets lang via cookie + combo select
-  const select = document.querySelector(".goog-te-combo")
-  if (select) {
-    select.value = langCode
-    select.dispatchEvent(new Event("change"))
+  if (langCode === "en") {
+    // Revert: remove cookie and reload
+    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/"
+    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname
+    window.location.reload()
+    return
   }
+  // Set cookie then trigger via combo — retry until widget ready
+  document.cookie = `googtrans=/en/${langCode}; path=/`
+  document.cookie = `googtrans=/en/${langCode}; path=/; domain=${window.location.hostname}`
+  const trySelect = (attempts = 0) => {
+    const select = document.querySelector(".goog-te-combo")
+    if (select) {
+      select.value = langCode
+      select.dispatchEvent(new Event("change"))
+    } else if (attempts < 20) {
+      setTimeout(() => trySelect(attempts + 1), 200)
+    }
+  }
+  trySelect()
 }
 
 function TranslateSwitcher() {
-  const [active, setActive] = useState("en")
+  const getInitialLang = () => {
+    const match = document.cookie.match(/googtrans=\/en\/([a-z]+)/)
+    return match ? match[1] : "en"
+  }
+  const [active, setActive] = useState(getInitialLang)
   const handleLang = (code) => {
     setActive(code)
-    setGoogleTranslateLang(code === "en" ? "" : code)
+    setGoogleTranslateLang(code)
   }
   return (
     <div className="flex items-center gap-1 shrink-0">
