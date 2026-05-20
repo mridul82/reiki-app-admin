@@ -3,6 +3,47 @@ import { useAuth } from "@/context/AuthContext"
 import { useNavigate } from "react-router-dom"
 import api from "@/lib/api"
 
+const LANGS = [
+  { code: "en", label: "EN" },
+  { code: "hi", label: "हि" },
+  { code: "as", label: "অ" },
+]
+
+function setGoogleTranslateLang(langCode) {
+  // Google Translate sets lang via cookie + combo select
+  const select = document.querySelector(".goog-te-combo")
+  if (select) {
+    select.value = langCode
+    select.dispatchEvent(new Event("change"))
+  }
+}
+
+function TranslateSwitcher() {
+  const [active, setActive] = useState("en")
+  const handleLang = (code) => {
+    setActive(code)
+    setGoogleTranslateLang(code === "en" ? "" : code)
+  }
+  return (
+    <div className="flex items-center gap-1 shrink-0">
+      {LANGS.map(l => (
+        <button
+          key={l.code}
+          onClick={() => handleLang(l.code)}
+          className="px-2.5 py-1 rounded-lg text-xs font-bold transition-all"
+          style={{
+            background: active === l.code ? "rgba(245,197,24,0.9)" : "rgba(255,255,255,0.1)",
+            color: active === l.code ? "#1a0a00" : "rgba(245,197,24,0.7)",
+            border: "1px solid rgba(245,197,24,0.35)",
+          }}
+        >
+          {l.label}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 const REMEDY_COLORS = {
   "Crystal":           { badge: "#16a34a", bg: "#f0fdf4", icon: "💎" },
   "Lal Kitab":         { badge: "#ea580c", bg: "#fff7ed", icon: "📕" },
@@ -219,6 +260,9 @@ export default function DashboardPage() {
               </div>
             )}
           </div>
+
+          {/* Language switcher */}
+          <TranslateSwitcher />
 
           {/* User + Sign out */}
           <div className="flex items-center gap-3 shrink-0">
