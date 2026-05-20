@@ -11,25 +11,14 @@ const LANGS = [
 
 function setGoogleTranslateLang(langCode) {
   if (langCode === "en") {
-    // Revert: remove cookie and reload
     document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/"
-    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=" + window.location.hostname
+    document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=." + window.location.hostname
     window.location.reload()
     return
   }
-  // Set cookie then trigger via combo — retry until widget ready
   document.cookie = `googtrans=/en/${langCode}; path=/`
-  document.cookie = `googtrans=/en/${langCode}; path=/; domain=${window.location.hostname}`
-  const trySelect = (attempts = 0) => {
-    const select = document.querySelector(".goog-te-combo")
-    if (select) {
-      select.value = langCode
-      select.dispatchEvent(new Event("change"))
-    } else if (attempts < 20) {
-      setTimeout(() => trySelect(attempts + 1), 200)
-    }
-  }
-  trySelect()
+  document.cookie = `googtrans=/en/${langCode}; path=/; domain=.${window.location.hostname}`
+  window.location.reload()
 }
 
 function TranslateSwitcher() {
@@ -39,6 +28,7 @@ function TranslateSwitcher() {
   }
   const [active, setActive] = useState(getInitialLang)
   const handleLang = (code) => {
+    if (code === active) return
     setActive(code)
     setGoogleTranslateLang(code)
   }
