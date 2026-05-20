@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react"
 import { useParams, useNavigate, useLocation } from "react-router-dom"
 import api from "@/lib/api"
+import TranslateSwitcher from "@/components/TranslateSwitcher"
 
 const REMEDY_COLORS = {
   "Crystal":           { bg: "#f0fdf4", border: "#86efac", badge: "#16a34a", text: "#14532d", icon: "💎" },
@@ -317,6 +318,9 @@ export default function ModulePage() {
               {step === 1 ? "Fill details & select problem areas" : "Review remedies & download PDF"}
             </p>
           </div>
+          {/* Language switcher */}
+          <TranslateSwitcher />
+
           {/* Step indicator */}
           <div className="hidden sm:flex items-center gap-2 text-xs">
             <span className="px-2.5 py-1 rounded-full font-bold"

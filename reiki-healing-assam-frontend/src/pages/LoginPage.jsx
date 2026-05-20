@@ -1,6 +1,7 @@
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { useAuth } from "@/context/AuthContext"
+import TranslateSwitcher from "@/components/TranslateSwitcher"
 
 export default function LoginPage() {
   const { login } = useAuth()
@@ -27,6 +28,11 @@ export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center px-4"
       style={{ background: "linear-gradient(135deg, #1a0a00 0%, #3d1f00 40%, #7a4500 100%)" }}>
+
+      {/* Language switcher */}
+      <div className="absolute top-4 right-4 z-10">
+        <TranslateSwitcher />
+      </div>
 
       {/* Decorative circles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
